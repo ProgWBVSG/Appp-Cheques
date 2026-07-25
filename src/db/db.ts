@@ -89,6 +89,14 @@ export class AppDatabase extends Dexie {
       metas: '++id, mes, titulo',
       movimientos: '++id, tipo, fecha, metodo, categoria'
     });
+
+    this.version(6).stores({
+      clientes: '++id, nombre, cuit',
+      cheques: '++id, clienteId, cliente, fechaCobro, estado',
+      recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
+      metas: '++id, mes, titulo, fechaCreacion',
+      movimientos: '++id, tipo, fecha, metodo, categoria'
+    });
   }
 }
 
