@@ -1,4 +1,4 @@
-import { DollarSign, AlertCircle, Clock, TrendingUp, Zap, ArrowRight, PhoneCall } from 'lucide-react';
+import { DollarSign, AlertCircle, Clock, CheckCircle2, TrendingUp, Zap, ArrowRight, PhoneCall } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isSameDay, format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -28,6 +28,9 @@ export default function Dashboard() {
     return { ...cl, deuda };
   }).filter(c => (c.deuda / c.limite) >= 0.85);
 
+  // Por ahora es 0 porque la BD no guarda el porcentaje de ganancia exacto por cheque.
+  // Esto asegura que no haya un número inventado (fake).
+  const gananciaMes = 0;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -147,10 +150,24 @@ export default function Dashboard() {
         </div>
 
 
-        <Link to="/calendario" className="bg-premium-card p-6 rounded-2xl border border-premium-muted/20 hover:border-premium-warning/50 transition-colors">
+        <div className={`bg-premium-card p-6 rounded-2xl border ${gananciaMes > 0 ? 'border-premium-success/50' : 'border-premium-muted/20'} transition-colors`}>
           <div className="flex items-center space-x-4">
-            <div className={`p-3 rounded-xl ${chequesVencenHoy.length > 0 ? 'bg-premium-warning/20' : 'bg-premium-warning/10'}`}>
-              <Clock className="text-premium-warning" size={24} />
+            <div className={`p-3 rounded-xl ${gananciaMes > 0 ? 'bg-premium-success/20' : 'bg-premium-muted/10'}`}>
+              <CheckCircle2 className={gananciaMes > 0 ? 'text-premium-success' : 'text-premium-muted'} size={24} />
+            </div>
+            <div>
+              <p className="text-base font-medium text-premium-muted">Ganancia del mes</p>
+              <h3 className={`text-2xl font-bold ${gananciaMes > 0 ? 'text-premium-success' : 'text-premium-text'}`}>
+                ${gananciaMes.toLocaleString('es-AR')}
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        <Link to="/calendario" className={`bg-premium-card p-6 rounded-2xl border ${chequesVencenHoy.length > 0 ? 'border-premium-warning/50' : 'border-premium-muted/20'} transition-colors`}>
+          <div className="flex items-center space-x-4">
+            <div className={`p-3 rounded-xl ${chequesVencenHoy.length > 0 ? 'bg-premium-warning/20' : 'bg-premium-muted/10'}`}>
+              <Clock className={chequesVencenHoy.length > 0 ? 'text-premium-warning' : 'text-premium-muted'} size={24} />
             </div>
             <div>
               <p className="text-base font-medium text-premium-muted">Vencen Hoy</p>
@@ -161,10 +178,10 @@ export default function Dashboard() {
           </div>
         </Link>
 
-        <Link to="/clientes" className="bg-premium-card p-6 rounded-2xl border border-premium-muted/20 hover:border-premium-danger/50 transition-colors">
+        <Link to="/clientes" className={`bg-premium-card p-6 rounded-2xl border ${chequesRechazados.length > 0 ? 'border-premium-danger/50' : 'border-premium-muted/20'} transition-colors`}>
           <div className="flex items-center space-x-4">
-            <div className={`p-3 rounded-xl ${chequesRechazados.length > 0 ? 'bg-premium-danger/20' : 'bg-premium-danger/10'}`}>
-              <AlertCircle className="text-premium-danger" size={24} />
+            <div className={`p-3 rounded-xl ${chequesRechazados.length > 0 ? 'bg-premium-danger/20' : 'bg-premium-muted/10'}`}>
+              <AlertCircle className={chequesRechazados.length > 0 ? 'text-premium-danger' : 'text-premium-muted'} size={24} />
             </div>
             <div>
               <p className="text-base font-medium text-premium-muted">A Gestionar (Rechazos)</p>
