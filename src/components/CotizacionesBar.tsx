@@ -119,7 +119,7 @@ export default function CotizacionesBar() {
       `}</style>
 
       <div
-        className="bg-premium-dark border-b border-premium-muted/20 w-full flex items-center h-14 sticky top-0 z-40 select-none"
+        className="bg-premium-dark border-b border-premium-muted/20 w-full flex items-center h-14 md:sticky md:top-0 z-40 select-none"
         ref={containerRef}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
