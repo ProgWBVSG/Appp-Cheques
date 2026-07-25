@@ -50,16 +50,21 @@ export const db = new AppDatabase();
 
 // Limpiar datos de prueba que hayan sido insertados previamente
 db.open().then(async () => {
-  const totalClientes = await db.clientes.count();
   const clientesFalsos = ['Empresa Alpha S.A.', 'Distribuidora Beta', 'Juan Pérez (Constructora)'];
-  if (totalClientes > 0) {
-    const todos = await db.clientes.toArray();
-    const sonSoloFalsos = todos.every(c => clientesFalsos.includes(c.nombre));
-    if (sonSoloFalsos) {
-      // Si la base solo tiene los datos de prueba, la vaciamos completamente
-      await db.clientes.clear();
-      await db.cheques.clear();
-      await db.recordatorios.clear();
-    }
+  
+  // Buscar a los clientes falsos
+  const clientesParaBorrar = await db.clientes.filter(c => clientesFalsos.includes(c.nombre)).toArray();
+  
+  if (clientesParaBorrar.length > 0) {
+    const idsFalsos = clientesParaBorrar.map(c => c.id!);
+    
+    // Borrar cheques que pertenezcan a esos IDs falsos
+    await db.cheques.filter(ch => idsFalsos.includes(ch.clienteId)).delete();
+    
+    // Borrar también los cheques por nombre (por si quedó alguno huérfano)
+    await db.cheques.filter(ch => clientesFalsos.includes(ch.cliente)).delete();
+    
+    // Borrar los clientes falsos de la DB
+    await db.clientes.bulkDelete(idsFalsos);
   }
 });
