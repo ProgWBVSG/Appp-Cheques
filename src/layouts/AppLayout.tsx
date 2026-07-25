@@ -2,12 +2,13 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Users, FileText, Calendar, LogOut, Table, Calculator, HelpCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CotizacionesBar from '../components/CotizacionesBar';
-import { CHEQUES } from '../data/mockData';
 import { isSameDay } from 'date-fns';
 import { useState } from 'react';
 import NotificationDrawer from '../components/NotificationDrawer';
 import { useRecordatorios } from '../context/RecordatoriosContext';
 import { Bell } from 'lucide-react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../db/db';
 
 export default function AppLayout() {
   const location = useLocation();
@@ -15,8 +16,9 @@ export default function AppLayout() {
 
   // ── Cálculo de alertas para badges ──────────────────────
   const hoy = new Date();
-  const vencenHoy    = CHEQUES.filter(c => isSameDay(new Date(c.fechaCobro), hoy)).length;
-  const rechazados   = CHEQUES.filter(c => c.estado === 'rechazado').length;
+  const chequesDB = useLiveQuery(() => db.cheques.toArray()) || [];
+  const vencenHoy = chequesDB.filter(c => isSameDay(new Date(c.fechaCobro), hoy)).length;
+  const rechazados = chequesDB.filter(c => c.estado === 'rechazado').length;
   const totalAlertas = vencenHoy + rechazados;
 
   const { recordatorios } = useRecordatorios();

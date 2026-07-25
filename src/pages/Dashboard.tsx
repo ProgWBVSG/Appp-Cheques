@@ -150,14 +150,14 @@ export default function Dashboard() {
         </div>
 
 
-        <div className={`bg-premium-card p-6 rounded-2xl border ${gananciaMes > 0 ? 'border-premium-success/50' : 'border-premium-muted/20'} transition-colors`}>
+        <div className="bg-premium-card p-6 rounded-2xl border border-premium-success/50 transition-colors">
           <div className="flex items-center space-x-4">
-            <div className={`p-3 rounded-xl ${gananciaMes > 0 ? 'bg-premium-success/20' : 'bg-premium-muted/10'}`}>
-              <CheckCircle2 className={gananciaMes > 0 ? 'text-premium-success' : 'text-premium-muted'} size={24} />
+            <div className="p-3 bg-premium-success/20 rounded-xl">
+              <CheckCircle2 className="text-premium-success" size={24} />
             </div>
             <div>
               <p className="text-base font-medium text-premium-muted">Ganancia del mes</p>
-              <h3 className={`text-2xl font-bold ${gananciaMes > 0 ? 'text-premium-success' : 'text-premium-text'}`}>
+              <h3 className="text-2xl font-bold text-premium-success">
                 ${gananciaMes.toLocaleString('es-AR')}
               </h3>
             </div>
