@@ -1,4 +1,4 @@
-import { DollarSign, AlertCircle, Clock, CheckCircle2, TrendingUp, Zap, ArrowRight, PhoneCall } from 'lucide-react';
+import { DollarSign, AlertCircle, Clock, TrendingUp, Zap, ArrowRight, PhoneCall } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isSameDay, format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -28,7 +28,6 @@ export default function Dashboard() {
     return { ...cl, deuda };
   }).filter(c => (c.deuda / c.limite) >= 0.85);
 
-  const gananciaMes = 850000; // TODO: calcular desde operaciones del mes
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -147,17 +146,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-premium-card p-6 rounded-2xl border border-premium-muted/20 hover:border-premium-success/50 transition-colors">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-premium-success/10 rounded-xl">
-              <CheckCircle2 className="text-premium-success" size={24} />
-            </div>
-            <div>
-              <p className="text-base font-medium text-premium-muted">Ganancia del mes</p>
-              <h3 className="text-2xl font-bold text-premium-text">${gananciaMes.toLocaleString('es-AR')}</h3>
-            </div>
-          </div>
-        </div>
 
         <Link to="/calendario" className="bg-premium-card p-6 rounded-2xl border border-premium-muted/20 hover:border-premium-warning/50 transition-colors">
           <div className="flex items-center space-x-4">
