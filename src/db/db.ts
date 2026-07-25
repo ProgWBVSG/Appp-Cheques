@@ -30,18 +30,45 @@ export interface Recordatorio {
   estado: 'pendiente' | 'completado';
 }
 
+export interface Meta {
+  id?: number;
+  mes: string; // Formato YYYY-MM
+  metaIngresos: number;
+}
+
+export interface Movimiento {
+  id?: number;
+  tipo: 'ingreso' | 'gasto';
+  monto: number;
+  concepto: string;
+  fecha: string; // ISO string
+  metodo: 'manual' | 'ai';
+}
+
+
 export class AppDatabase extends Dexie {
   clientes!: Table<Cliente, number>;
   cheques!: Table<Cheque, number>;
   recordatorios!: Table<Recordatorio, number>;
+  metas!: Table<Meta, number>;
+  movimientos!: Table<Movimiento, number>;
 
   constructor() {
     super('GestionChequesDB');
 
+    // Mantenemos la v2 y agregamos v3 con las nuevas tablas
     this.version(2).stores({
       clientes: '++id, nombre, cuit',
       cheques: '++id, clienteId, cliente, fechaCobro, estado',
       recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion'
+    });
+
+    this.version(3).stores({
+      clientes: '++id, nombre, cuit',
+      cheques: '++id, clienteId, cliente, fechaCobro, estado',
+      recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
+      metas: '++id, mes',
+      movimientos: '++id, tipo, fecha, metodo'
     });
   }
 }

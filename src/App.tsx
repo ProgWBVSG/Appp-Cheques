@@ -8,6 +8,7 @@ import Calendario from './pages/Calendario';
 import Reportes from './pages/Reportes';
 import Calculadora from './pages/Calculadora';
 import Tutorial from './pages/Tutorial';
+import Metas from './pages/Metas';
 import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
@@ -59,6 +60,7 @@ function App() {
             <Route path="cheques" element={<Cheques />} />
             <Route path="calendario" element={<Calendario />} />
             <Route path="reportes" element={<Reportes />} />
+            <Route path="metas" element={<Metas />} />
             <Route path="calculadora" element={<Calculadora />} />
             <Route path="tutorial" element={<Tutorial />} />
           </Route>

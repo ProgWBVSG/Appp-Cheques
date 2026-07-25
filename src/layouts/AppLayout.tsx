@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, FileText, Calendar, LogOut, Table, Calculator, HelpCircle } from 'lucide-react';
+import { Home, Users, FileText, Calendar, LogOut, Table, Calculator, HelpCircle, Target } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CotizacionesBar from '../components/CotizacionesBar';
 import { isSameDay } from 'date-fns';
@@ -30,6 +30,7 @@ export default function AppLayout() {
     { path: '/',            icon: Home,       label: 'Dashboard',   badge: totalAlertas },
     { path: '/clientes',    icon: Users,      label: 'Clientes',    badge: 0 },
     { path: '/cheques',     icon: FileText,   label: 'Cheques',     badge: 0 },
+    { path: '/metas',       icon: Target,     label: 'Gastos',      badge: 0 },
     { path: '/calendario',  icon: Calendar,   label: 'Agenda',      badge: vencenHoy },
     { path: '/reportes',    icon: Table,      label: 'Reportes',    badge: 0 },
     { path: '/calculadora', icon: Calculator, label: 'Calculadora', badge: 0 },
