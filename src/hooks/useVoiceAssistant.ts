@@ -57,7 +57,15 @@ export function useVoiceAssistant(): UseVoiceAssistantResult {
     };
 
     recognition.onerror = (event: any) => {
-      setError(`Error de voz: ${event.error}`);
+      let errorMessage = `Error: ${event.error}`;
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        errorMessage = 'Micrófono bloqueado. En iPhone: andá a Configuración > Safari > Micrófono y ponelo en "Permitir". También verificá tener el "Dictado" activado en el teclado.';
+      } else if (event.error === 'network') {
+        errorMessage = 'Error de red. El reconocimiento de voz en este celular requiere internet.';
+      } else if (event.error === 'no-speech') {
+        errorMessage = 'No se escuchó nada. Intentá acercarte al micrófono.';
+      }
+      setError(errorMessage);
       setIsListening(false);
     };
 
