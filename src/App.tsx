@@ -13,6 +13,7 @@ import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 
 import { RecordatoriosProvider } from './context/RecordatoriosContext';
+import InstallPrompt from './components/InstallPrompt';
 
 function App() {
   // FAKE SESSION FOR DEMO PURPOSES
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <RecordatoriosProvider>
+      <InstallPrompt />
       <Router>
         <Routes>
           <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
