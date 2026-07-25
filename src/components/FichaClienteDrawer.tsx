@@ -11,16 +11,16 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 
 export default function FichaClienteDrawer({ cliente, isOpen, onClose }: FichaClienteDrawerProps) {
-  if (!isOpen || !cliente) return null;
-
-  const porcentajeUso = (cliente.deuda / cliente.limite) * 100;
-  const estaAlLimite = porcentajeUso >= 90;
-
   const historial = useLiveQuery(async () => {
     if (!cliente?.id) return [];
     const cheques = await db.cheques.where('clienteId').equals(cliente.id).toArray();
     return cheques.sort((a, b) => new Date(b.fechaCobro).getTime() - new Date(a.fechaCobro).getTime());
   }, [cliente?.id]) || [];
+
+  if (!isOpen || !cliente) return null;
+
+  const porcentajeUso = (cliente.deuda / cliente.limite) * 100;
+  const estaAlLimite = porcentajeUso >= 90;
 
   const handleEliminar = async () => {
     if (window.confirm(`¿Estás seguro que querés eliminar a ${cliente.nombre}? Esta acción borrará al cliente de tu lista.`)) {
