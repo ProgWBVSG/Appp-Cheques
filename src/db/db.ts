@@ -12,21 +12,21 @@ export interface Cliente {
 export interface Cheque {
   id?: number;
   clienteId: number;
-  cliente: string; // Nombre desnormalizado para consultas rápidas
+  cliente: string;
   banco: string;
   nroCheque: string;
   monto: number;
-  fechaCobro: string; // ISO string
+  fechaCobro: string;
   estado: 'en_cartera' | 'depositado' | 'cobrado' | 'rechazado' | 'endosado' | 'vencido';
 }
 
 export interface Recordatorio {
   id?: number;
   tipo: 'cliente' | 'cheque' | 'general';
-  referenciaId?: number; // ID del cliente o del cheque
+  referenciaId?: number;
   titulo: string;
   texto: string;
-  fechaCreacion: string; // ISO string
+  fechaCreacion: string;
   estado: 'pendiente' | 'completado';
 }
 
@@ -37,34 +37,29 @@ export class AppDatabase extends Dexie {
 
   constructor() {
     super('GestionChequesDB');
-    
-    this.version(1).stores({
+
+    this.version(2).stores({
       clientes: '++id, nombre, cuit',
       cheques: '++id, clienteId, cliente, fechaCobro, estado',
       recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion'
-    });
-
-    this.on('populate', async () => {
-      await this.clientes.bulkAdd([
-        { nombre: 'Empresa Alpha S.A.', cuit: '30-12345678-9', telefono: '1123456789', limite: 5000000 },
-        { nombre: 'Distribuidora Beta', cuit: '30-98765432-1', telefono: '1198765432', limite: 2000000 },
-        { nombre: 'Juan Pérez (Constructora)', cuit: '20-11223344-5', telefono: '1144556677', limite: 10000000 },
-      ]);
-
-      const now = new Date();
-      const addDays = (date: Date, days: number) => {
-        const result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result.toISOString();
-      };
-
-      await this.cheques.bulkAdd([
-        { clienteId: 1, cliente: 'Empresa Alpha S.A.', banco: 'Galicia', nroCheque: '000001', monto: 450000, fechaCobro: now.toISOString(), estado: 'en_cartera' },
-        { clienteId: 2, cliente: 'Distribuidora Beta', banco: 'Santander', nroCheque: '000002', monto: 1250000, fechaCobro: addDays(now, 2), estado: 'depositado' },
-        { clienteId: 3, cliente: 'Juan Pérez (Constructora)', banco: 'Provincia', nroCheque: '000003', monto: 300000, fechaCobro: addDays(now, -1), estado: 'rechazado' },
-      ]);
     });
   }
 }
 
 export const db = new AppDatabase();
+
+// Limpiar datos de prueba que hayan sido insertados previamente
+db.open().then(async () => {
+  const totalClientes = await db.clientes.count();
+  const clientesFalsos = ['Empresa Alpha S.A.', 'Distribuidora Beta', 'Juan Pérez (Constructora)'];
+  if (totalClientes > 0) {
+    const todos = await db.clientes.toArray();
+    const sonSoloFalsos = todos.every(c => clientesFalsos.includes(c.nombre));
+    if (sonSoloFalsos) {
+      // Si la base solo tiene los datos de prueba, la vaciamos completamente
+      await db.clientes.clear();
+      await db.cheques.clear();
+      await db.recordatorios.clear();
+    }
+  }
+});
