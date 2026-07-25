@@ -41,6 +41,7 @@ export interface Movimiento {
   tipo: 'ingreso' | 'gasto';
   monto: number;
   concepto: string;
+  categoria: string;
   fecha: string; // ISO string
   metodo: 'manual' | 'ai';
 }
@@ -69,6 +70,14 @@ export class AppDatabase extends Dexie {
       recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
       metas: '++id, mes',
       movimientos: '++id, tipo, fecha, metodo'
+    });
+
+    this.version(4).stores({
+      clientes: '++id, nombre, cuit',
+      cheques: '++id, clienteId, cliente, fechaCobro, estado',
+      recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
+      metas: '++id, mes',
+      movimientos: '++id, tipo, fecha, metodo, categoria'
     });
   }
 }
