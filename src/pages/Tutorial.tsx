@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { HelpCircle, ChevronDown, Bell, Users, Calculator, LayoutDashboard } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { HelpCircle, ChevronDown, Bell, Users, Calculator, LayoutDashboard, Download } from 'lucide-react';
 
 const MODULES = [
   {
@@ -75,6 +75,59 @@ const MODULES = [
 
 export default function Tutorial() {
   const [expanded, setExpanded] = useState<string | null>('dashboard');
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) {
+      alert("No se puede iniciar la instalación automáticamente. Por favor, seguí las instrucciones manuales de abajo según tu celular.");
+      return;
+    }
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
+  };
+
+  const APP_MODULE = {
+    id: 'instalar',
+    title: 'Instalar App en el Celular',
+    icon: Download,
+    color: 'text-green-500',
+    bg: 'bg-green-500/10 border-green-500/20',
+    content: (
+      <div className="space-y-4 text-premium-muted text-base leading-relaxed">
+        <p>Podés instalar esta aplicación en tu celular para tenerla como una app normal (con ícono, sin barra de direcciones y súper rápida).</p>
+        
+        {/* Botón de instalación directa (si está disponible) */}
+        <button 
+          onClick={handleInstallClick}
+          className="w-full bg-premium-accent hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-95"
+        >
+          {installPrompt ? 'Tocar aquí para Instalar' : 'Tocar para intentar instalar'}
+        </button>
+
+        <div className="mt-4 p-4 bg-premium-dark rounded-xl border border-premium-muted/20">
+          <h3 className="font-bold text-premium-text mb-2">Si el botón no funciona:</h3>
+          <ul className="list-disc pl-5 space-y-2 text-sm">
+            <li><strong>En Android (Chrome):</strong> Tocá los <strong className="text-white">tres puntitos (⋮)</strong> arriba a la derecha en el navegador, y elegí <strong>"Instalar Aplicación"</strong> o "Agregar a la pantalla principal".</li>
+            <li><strong>En iPhone (Safari):</strong> Tocá el botón de <strong className="text-white">Compartir</strong> (el cuadradito con la flecha para arriba) en la parte de abajo, y elegí <strong>"Agregar a Inicio"</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    ),
+  };
+
+  const ALL_MODULES = [APP_MODULE, ...MODULES];
 
   const toggle = (id: string) => {
     setExpanded(expanded === id ? null : id);
@@ -93,7 +146,7 @@ export default function Tutorial() {
       </header>
 
       <div className="space-y-4 mt-8">
-        {MODULES.map((mod) => {
+        {ALL_MODULES.map((mod) => {
           const isExpanded = expanded === mod.id;
           const Icon = mod.icon;
 
