@@ -133,33 +133,45 @@ export default function Metas() {
       </div>
 
       {/* Botones de Acción (IA vs Manual) */}
-      <div className="flex flex-col sm:flex-row gap-4 mt-4">
-        <button
-          onClick={startListening}
-          disabled={!supported || isListening}
-          className={`flex-1 flex flex-col items-center justify-center p-6 rounded-2xl transition-all shadow-lg border ${
-            isListening 
-              ? 'bg-blue-600 border-blue-400 animate-pulse text-white' 
-              : 'bg-gradient-to-br from-premium-accent to-blue-600 border-premium-accent/30 text-white hover:opacity-90 active:scale-95'
-          }`}
-        >
-          <div className={`p-4 rounded-full mb-3 ${isListening ? 'bg-white/20' : 'bg-white/10'}`}>
-            <Mic size={32} className={isListening ? 'animate-bounce' : ''} />
-          </div>
-          <span className="font-bold text-lg">{isListening ? 'Escuchando...' : 'Asistente de Voz'}</span>
-          <span className="text-xs opacity-80 mt-1">"Gasté 5.000 en nafta" o "Cobré 10.000"</span>
-        </button>
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={startListening}
+            disabled={!supported || isListening}
+            className={`flex-1 flex flex-col items-center justify-center p-6 rounded-2xl transition-all shadow-lg border ${
+              isListening 
+                ? 'bg-blue-600 border-blue-400 animate-pulse text-white' 
+                : 'bg-gradient-to-br from-premium-accent to-blue-600 border-premium-accent/30 text-white hover:opacity-90 active:scale-95'
+            }`}
+          >
+            <div className={`p-4 rounded-full mb-3 ${isListening ? 'bg-white/20' : 'bg-white/10'}`}>
+              <Mic size={32} className={isListening ? 'animate-bounce' : ''} />
+            </div>
+            <span className="font-bold text-lg">{isListening ? 'Escuchando...' : 'Asistente de Voz'}</span>
+            <span className="text-xs opacity-80 mt-1">"Gasté 5.000 en supermercado"</span>
+          </button>
 
-        <button
-          onClick={() => setShowManualForm(true)}
-          className="flex-1 flex flex-col items-center justify-center p-6 rounded-2xl bg-premium-card border border-premium-muted/20 hover:border-premium-muted/50 text-premium-text transition-all active:scale-95"
-        >
-          <div className="p-4 rounded-full mb-3 bg-premium-muted/10">
-            <Plus size={32} />
-          </div>
-          <span className="font-bold text-lg">Carga Manual</span>
-          <span className="text-xs text-premium-muted mt-1">Escribir los datos a mano</span>
-        </button>
+          <button
+            onClick={() => setShowManualForm(true)}
+            className="flex-1 flex flex-col items-center justify-center p-6 rounded-2xl bg-premium-card border border-premium-muted/20 hover:border-premium-muted/50 text-premium-text transition-all active:scale-95"
+          >
+            <div className="p-4 rounded-full mb-3 bg-premium-muted/10">
+              <Plus size={32} />
+            </div>
+            <span className="font-bold text-lg">Carga Manual</span>
+            <span className="text-xs text-premium-muted mt-1">Escribir los datos a mano</span>
+          </button>
+        </div>
+        
+        {/* Recomendación de uso del Asistente */}
+        <div className="bg-premium-dark/50 p-4 rounded-xl border border-premium-muted/10 text-sm text-premium-muted flex items-start gap-3">
+          <div className="mt-0.5 text-premium-accent">💡</div>
+          <p>
+            <strong className="text-premium-text">Tip para el Asistente de Voz:</strong> Recomendamos decir categorías amplias en vez de detalles específicos. 
+            Por ejemplo, en lugar de decir <em>"Gasté 5000 en ñoquis y salsa"</em>, es mejor decir <em>"Gasté 5000 en comida"</em> o <em>"restaurante"</em>. 
+            El asistente entiende decenas de verbos como: <span className="italic">cobré, gané, me depositaron, vendí, gasté, perdí, me debitaron, etc.</span>
+          </p>
+        </div>
       </div>
 
       {/* Feedback de voz */}

@@ -62,9 +62,21 @@ export function parseTransaction(transcript: string): NLPResult | null {
   
   let tipo: 'ingreso' | 'gasto' | 'meta' | null = null;
   
-  if (t.includes('gast') || t.includes('compr') || t.includes('pagu') || t.includes('salida') || t.includes('gasto') || t.includes('perd') || t.includes('cost') || t.includes('factura') || t.includes('tarjeta')) {
+  // Diccionario masivo de acciones de GASTO
+  const keywordsGasto = [
+    'gast', 'compr', 'pagu', 'salida', 'gasto', 'perd', 'cost', 'factura', 'tarjeta', 
+    'invert', 'prest', 'transfer', 'abon', 'debit', 'saqu', 'retiro', 'pag', 'descont'
+  ];
+  
+  // Diccionario masivo de acciones de INGRESO
+  const keywordsIngreso = [
+    'cobr', 'ingres', 'recib', 'entr', 'gan', 'vend', 'sueldo', 'venta', 'deposit', 
+    'prest', 'devolv', 'pago de', 'transferencia de', 'aguinaldo', 'bono', 'premio'
+  ];
+
+  if (keywordsGasto.some(k => t.includes(k))) {
     tipo = 'gasto';
-  } else if (t.includes('cobr') || t.includes('ingres') || t.includes('recib') || t.includes('entr') || t.includes('gan') || t.includes('vend') || t.includes('sueldo') || t.includes('venta')) {
+  } else if (keywordsIngreso.some(k => t.includes(k))) {
     tipo = 'ingreso';
   } else if (t.includes('meta') || t.includes('objetivo') || t.includes('alcanzar')) {
     tipo = 'meta';
@@ -80,8 +92,10 @@ export function parseTransaction(transcript: string): NLPResult | null {
   // "Pagué 1000 pesos de luz" -> concepto: "luz"
   let concepto = transcript;
   
-  // Eliminar palabras de acción
-  concepto = concepto.replace(/(gasté|gaste|gasto|compré|compre|pagué|pague|cobré|cobre|ingresé|ingrese|gané|gane|ganamos|recibí|recibi|entró|entro|vendí|vendi|perdí|perdi|meta|objetivo)\b/gi, '');
+  // Eliminar palabras de acción (verbos conjugados comunes) para limpiar el concepto
+  const actionRegex = /\b(gasté|gaste|gasto|gastamos|compré|compre|compramos|pagué|pague|pagamos|cobré|cobre|cobramos|ingresé|ingrese|ingreso|gané|gane|ganamos|recibí|recibi|recibimos|entró|entro|vendí|vendi|vendimos|perdí|perdi|perdimos|invertí|inverti|presté|preste|transferí|transferi|aboné|abone|debitaron|saqué|saque|depositaron|meta|objetivo)\b/gi;
+  
+  concepto = concepto.replace(actionRegex, '');
   // Eliminar el monto y palabras asociadas (incluyendo el signo $)
   concepto = concepto.replace(/[$]?\s*\d+(?:[.,]\d+)?\s*(mil|lucas|k|m|millones|pesos|dólares|dolares|usd)?/gi, '');
   // Eliminar preposiciones comunes de conexión
