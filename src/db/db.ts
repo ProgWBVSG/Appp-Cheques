@@ -32,8 +32,10 @@ export interface Recordatorio {
 
 export interface Meta {
   id?: number;
-  mes: string; // Formato YYYY-MM
-  metaIngresos: number;
+  titulo: string;        // Nombre del objetivo
+  metaIngresos: number;  // Monto objetivo
+  mes: string;           // YYYY-MM del mes en que aplica
+  fechaCreacion: string; // ISO string
 }
 
 export interface Movimiento {
@@ -77,6 +79,14 @@ export class AppDatabase extends Dexie {
       cheques: '++id, clienteId, cliente, fechaCobro, estado',
       recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
       metas: '++id, mes',
+      movimientos: '++id, tipo, fecha, metodo, categoria'
+    });
+
+    this.version(5).stores({
+      clientes: '++id, nombre, cuit',
+      cheques: '++id, clienteId, cliente, fechaCobro, estado',
+      recordatorios: '++id, tipo, referenciaId, estado, fechaCreacion',
+      metas: '++id, mes, titulo',
       movimientos: '++id, tipo, fecha, metodo, categoria'
     });
   }
